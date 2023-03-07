@@ -1,0 +1,21 @@
+﻿{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "hubNetworkAddressSpace": {
+        "value": "10.120.112.0/20"
+    },
+    "dnsServers": {
+        "value": [
+            "10.120.116.4",
+            "10.120.116.5"
+        ]
+    },
+    "enableFirewall": {
+        "value": true
+    },
+    "enableBastion": {
+        "value": true
+    }    
+  }
+}

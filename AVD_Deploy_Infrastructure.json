@@ -1,0 +1,84 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "hubNetworkAddressSpace": {
+      "type": "string",
+      "metadata": {
+        "description": "This is the address space for the hub virtual network, provided as a CIDR (10.120.112.0/20). This address space should be a 255.255.248.0 or CIDR /21 or larger subnet."
+      }
+    },
+    "dnsServers": {
+      "type": "array",
+      "metadata": {
+        "description": "Specify all DNS servers for this deployment, should be specified as an array of IP Addresses, [\"10.120.116.4\",\"10.120.116.5\"], for example."
+      }
+    },
+    "enableFirewall": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Enable an Azure Firewall service on the hub to create public endpoints for services in the hub virtual network, this is a billable option."
+      }
+    },
+    "enableBastion": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Enable an Azure Bastion service on the hub to access virtual machines without a public IP address, this is a billable option."
+      }
+    }
+
+
+  },
+  "variables": {
+    "Ver": "1.0.0.0",
+//    "DeploymentSpecificUniqueString": "[uniqueString(resourceGroup().id, subscription().tenantId)]"
+  },
+  "resources": [
+
+//    {
+//      "type": "Microsoft.Resources/resourceGroups",
+//      "name": "[concat(resourceGroup().name, '-vnet-', resourceGroup().location, '-rg')]",
+//      "apiVersion": "2022-09-01",
+//      "location": "[resourceGroup().location]",
+//      "tags": {},
+//      "managedBy": "Someone",
+//      "properties": {}
+//    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "name": "nestedDeployment1",      
+      "apiVersion": "2022-09-01",
+ //     "location": "[resourceGroup().location]",
+      "tags": {},
+      "resourceGroup": "[resourceGroup().name]", // "[concat(resourceGroup().name, '-vnet-', resourceGroup().location, '-rg')]",
+      "properties": {
+        "mode": "Incremental",
+        "parameters": {
+          "hubNetworkAddressSpace": {
+            "value": "[parameters('hubNetworkAddressSpace')]"
+          },
+          "dnsServers": {
+            "value": "[array(parameters('dnsServers'))]"
+          },
+          "enableFirewall": {
+            "value": "[parameters('enableFirewall')]"
+          },
+          "enableBastion": {
+            "value": "[parameters('enableBastion')]"
+          }
+        },
+        "templateLink": {
+          //"relativePath": ".//AVD_Deploy_Network.json"
+          "uri": "/home/mmeade/Public/code/AVD_Deploy/AVD_Deploy_Network.json"
+        }
+      },
+      "dependsOn": [
+//        "[resourceId('Microsoft.Resources/resourceGroups', concat(resourceGroup().name, '-vnet-', resourceGroup().location, '-rg'))]"
+      ]
+    }
+  ],
+  "outputs": {
+  }
+}
