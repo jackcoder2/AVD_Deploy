@@ -423,7 +423,7 @@
                 "name": "AZFW_Hub",
                 "tier": "Basic"
             },
-            "threatIntelMode": "Alert",
+            //"threatIntelMode": "Alert",
             "additionalProperties": {},
             "ipConfigurations": [
                 {
