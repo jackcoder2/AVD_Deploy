@@ -2,8 +2,8 @@
   "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "deploymentName": {
-        "value": "AVDHub"
+    "rootDeploymentName": {
+        "value": "avdDeploy-hub"
     },
     "deploymentRegion": {
         "value": "westus3"
@@ -17,8 +17,11 @@
             "10.120.116.5"
         ]
     },
-    "enableFirewall": {
+    "enableFrontDoor": {
         "value": true
+    },
+    "enableFirewall": {
+        "value": false
     },
     "enableBastion": {
         "value": false

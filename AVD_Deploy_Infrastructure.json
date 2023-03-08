@@ -2,7 +2,7 @@
   "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "deploymentName": {
+    "rootDeploymentName": {
       "type": "string",
       "metadata": {
         "description": "The deployment name for this AVD hub infrastructure"
@@ -26,6 +26,13 @@
         "description": "Specify all DNS servers for this deployment, should be specified as an array of IP Addresses, [\"10.120.116.4\",\"10.120.116.5\"], for example."
       }
     },
+    "enableFrontDoor": {
+      "type": "bool",
+      "defaultValue": false,
+      "metadata": {
+        "description": "Enable an Azure Firewall service on the hub to create public endpoints for services in the hub virtual network, this is a billable option."
+      }
+    },
     "enableFirewall": {
       "type": "bool",
       "defaultValue": false,
@@ -45,7 +52,7 @@
   "resources": [
     {
       "type": "Microsoft.Resources/resourceGroups",
-      "name": "[concat(parameters('deploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg')]",
+      "name": "[concat(parameters('rootDeploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg')]",
       "apiVersion": "2022-09-01",
       "location": "[parameters('deploymentRegion')]",
       "tags": {},
@@ -57,7 +64,7 @@
       "name": "AVD_Deploy_Network",      
       "apiVersion": "2022-09-01",
       "tags": {},
-      "resourceGroup": "[concat(parameters('deploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg')]",
+      "resourceGroup": "[concat(parameters('rootDeploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg')]",
       "properties": {
         "mode": "Incremental",
         "parameters": {
@@ -66,6 +73,9 @@
           },
           "dnsServers": {
             "value": "[array(parameters('dnsServers'))]"
+          },
+          "enableFrontDoor": {
+            "value": "[parameters('enableFrontDoor')]"
           },
           "enableFirewall": {
             "value": "[parameters('enableFirewall')]"
@@ -80,7 +90,7 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/resourceGroups', concat(parameters('deploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg'))]"
+        "[resourceId('Microsoft.Resources/resourceGroups', concat(parameters('rootDeploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg'))]"
       ]
     }
   ],

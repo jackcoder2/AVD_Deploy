@@ -1,6 +1,7 @@
 clear-host
 Logout-AzAccount
 
+$ErrorMessages = $null
 [switch] $ValidateOnly = $false
 $deploymentRegion = "westus3"
 $TemplateFile = '~/Public/code/AVD_Deploy/AVD_Deploy_Infrastructure.json'
