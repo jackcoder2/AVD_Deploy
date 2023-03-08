@@ -756,7 +756,7 @@
               {
                 "domains": [
                   {
-                    "id": "[resourceId('Microsoft.Cdn/profiles/afdendpoints', variables('frontDoorName'), concat('avd-',variables('DeploymentSpecificUniqueString')))]"
+                    "id": "[resourceId('Microsoft.Cdn/profiles/afdendpoints', variables('frontDoorName'), concat(variables('frontDoorName'), '/endpoint-', variables('DeploymentSpecificUniqueString'))]"
                   }
                 ],
                 "patternsToMatch": [
