@@ -420,10 +420,10 @@
         "location": "[resourceGroup().location]",
         "properties": {
             "sku": {
-                "name": "AZFW_Hub",
+                "name": "AZFW_VNet",
                 "tier": "Basic"
             },
-            //"threatIntelMode": "Alert",
+            "threatIntelMode": "Alert",
             "additionalProperties": {},
             "ipConfigurations": [
                 {

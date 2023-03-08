@@ -1,7 +1,19 @@
 {
-  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "$schema": "https://schema.management.azure.com/schemas/2018-05-01/subscriptionDeploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
+    "deploymentName": {
+      "type": "string",
+      "metadata": {
+        "description": "The deployment name for this AVD hub infrastructure"
+      }
+    },
+    "deploymentRegion": {
+      "type": "string",
+      "metadata": {
+        "description": "The deployment region for this AVD hub infrastructure"
+      }
+    },
     "hubNetworkAddressSpace": {
       "type": "string",
       "metadata": {
@@ -28,31 +40,24 @@
         "description": "Enable an Azure Bastion service on the hub to access virtual machines without a public IP address, this is a billable option."
       }
     }
-
-
   },
-  "variables": {
-    "Ver": "1.0.0.0",
-//    "DeploymentSpecificUniqueString": "[uniqueString(resourceGroup().id, subscription().tenantId)]"
-  },
+  "variables": {},
   "resources": [
-
-//    {
-//      "type": "Microsoft.Resources/resourceGroups",
-//      "name": "[concat(resourceGroup().name, '-vnet-', resourceGroup().location, '-rg')]",
-//      "apiVersion": "2022-09-01",
-//      "location": "[resourceGroup().location]",
-//      "tags": {},
-//      "managedBy": "Someone",
-//      "properties": {}
-//    },
+    {
+      "type": "Microsoft.Resources/resourceGroups",
+      "name": "[concat(parameters('deploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg')]",
+      "apiVersion": "2022-09-01",
+      "location": "[parameters('deploymentRegion')]",
+      "tags": {},
+      "managedBy": "Someone",
+      "properties": {}
+    },
     {
       "type": "Microsoft.Resources/deployments",
-      "name": "nestedDeployment1",      
+      "name": "AVD_Deploy_Network",      
       "apiVersion": "2022-09-01",
- //     "location": "[resourceGroup().location]",
       "tags": {},
-      "resourceGroup": "[resourceGroup().name]", // "[concat(resourceGroup().name, '-vnet-', resourceGroup().location, '-rg')]",
+      "resourceGroup": "[concat(parameters('deploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg')]",
       "properties": {
         "mode": "Incremental",
         "parameters": {
@@ -75,7 +80,7 @@
         }
       },
       "dependsOn": [
-//        "[resourceId('Microsoft.Resources/resourceGroups', concat(resourceGroup().name, '-vnet-', resourceGroup().location, '-rg'))]"
+        "[resourceId('Microsoft.Resources/resourceGroups', concat(parameters('deploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg'))]"
       ]
     }
   ],
