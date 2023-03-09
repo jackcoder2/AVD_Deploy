@@ -756,7 +756,7 @@
               {
                 "domains": [
                   {
-                    "id": "[resourceId('Microsoft.Cdn/profiles/afdendpoints', concat(variables('frontDoorName'), '/endpoint-', variables('DeploymentSpecificUniqueString')))]"
+                    "id": "[resourceId('Microsoft.Cdn/profiles/afdendpoints', variables('frontDoorName'), concat('/endpoint-', variables('DeploymentSpecificUniqueString')))]"
                     // "[resourceId('Microsoft.Cdn/profiles/afdendpoints', variables('frontDoorName'), concat(variables('frontDoorName'), '/endpoint-', variables('DeploymentSpecificUniqueString')))]"
                   }
                 ],
@@ -772,7 +772,7 @@
         "dependsOn": [
           "[resourceId('Microsoft.Cdn/profiles', variables('frontDoorName'))]",
           //"[resourceId('Microsoft.Cdn/profiles/afdendpoints', variables('frontDoorName'), concat(variables('frontDoorName'), '/endpoint-', variables('DeploymentSpecificUniqueString')))]",
-          "[resourceId('Microsoft.Cdn/profiles/afdendpoints', concat(variables('frontDoorName'), '/endpoint-', variables('DeploymentSpecificUniqueString')))]",
+          "[resourceId('Microsoft.Cdn/profiles/afdendpoints', variables('frontDoorName'), concat('/endpoint-', variables('DeploymentSpecificUniqueString')))]",
           "[resourceId('Microsoft.Network/frontdoorwebapplicationfirewallpolicies', variables('frontdoorWAFName'))]"
         ]
       },
@@ -805,7 +805,7 @@
         "condition": "[parameters('enableFrontDoor')]",
         "dependsOn": [
           //"[resourceId('Microsoft.Cdn/profiles/afdendpoints', variables('frontDoorName'), concat(variables('frontDoorName'), '/endpoint-', variables('DeploymentSpecificUniqueString')))]",
-          "[resourceId('Microsoft.Cdn/profiles/afdendpoints', concat(variables('frontDoorName'), '/endpoint-', variables('DeploymentSpecificUniqueString')))]",
+          "[resourceId('Microsoft.Cdn/profiles/afdendpoints', variables('frontDoorName'), concat('/endpoint-', variables('DeploymentSpecificUniqueString')))]",
           "[resourceId('Microsoft.Cdn/profiles', variables('frontDoorName'))]",
           "[resourceId('Microsoft.Cdn/profiles/origingroups', variables('frontDoorName'), 'avdFdBackendGroup')]",
           "[resourceId('Microsoft.Cdn/profiles/rulesets', variables('frontDoorName'), 'SecurityHeaders')]"
