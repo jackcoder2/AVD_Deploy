@@ -36,6 +36,7 @@
   },
   "variables": {},
   "resources": [
+    // --== Virtual Network ==--
     {
       "type": "Microsoft.Resources/resourceGroups",
       "name": "[concat(parameters('rootDeploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg')]",
@@ -47,7 +48,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "name": "AVD_Deploy_Network",      
+      "name": "[concat(parameters('rootDeploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg')]",      
       "apiVersion": "2022-09-01",
       "tags": {},
       "resourceGroup": "[concat(parameters('rootDeploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg')]",
@@ -71,6 +72,38 @@
       },
       "dependsOn": [
         "[resourceId('Microsoft.Resources/resourceGroups', concat(parameters('rootDeploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg'))]"
+      ]
+    },
+
+    // --== LogAnalytics ==--
+    {
+      "type": "Microsoft.Resources/resourceGroups",
+      "name": "[concat(parameters('rootDeploymentName'), '-loganalytics-', parameters('deploymentRegion'), '-rg')]",
+      "apiVersion": "2022-09-01",
+      "location": "[parameters('deploymentRegion')]",
+      "tags": {},
+      "managedBy": "Someone",
+      "properties": {},
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', concat(parameters('rootDeploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg'))]"
+      ]
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "name": "[concat(parameters('rootDeploymentName'), '-loganalytics-', parameters('deploymentRegion'), '-rg')]",      
+      "apiVersion": "2022-09-01",
+      "tags": {},
+      "resourceGroup": "[concat(parameters('rootDeploymentName'), '-loganalytics-', parameters('deploymentRegion'), '-rg')]",
+      "properties": {
+        "mode": "Incremental",
+        "parameters": {},
+        "templateLink": {
+          "uri": "https://raw.githubusercontent.com/jackcoder2/AVD_Deploy/main/AVD_Deploy_LogAnalytics.json",
+          "contentVersion": "1.0.0.0"
+        }
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.Resources/resourceGroups', concat(parameters('rootDeploymentName'), '-loganalytics-', parameters('deploymentRegion'), '-rg'))]"
       ]
     }
   ],
