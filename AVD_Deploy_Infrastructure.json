@@ -84,9 +84,7 @@
       "tags": {},
       "managedBy": "Someone",
       "properties": {},
-      "dependsOn": [
-        //"[resourceId('Microsoft.Resources/deployments', 'virtualnetwork')]"
-      ]
+      "dependsOn": []
     },
     {
       "type": "Microsoft.Resources/deployments",
@@ -103,6 +101,7 @@
         }
       },
       "dependsOn": [
+        "[resourceId('Microsoft.Resources/deployments', 'virtualnetwork')]",
         "[resourceId('Microsoft.Resources/resourceGroups', concat(parameters('rootDeploymentName'), '-loganalytics-', parameters('deploymentRegion'), '-rg'))]"
       ]
     }
