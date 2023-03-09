@@ -85,7 +85,7 @@
       "managedBy": "Someone",
       "properties": {},
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', 'virtualnetwork')]"
+        //"[resourceId('Microsoft.Resources/deployments', 'virtualnetwork')]"
       ]
     },
     {
