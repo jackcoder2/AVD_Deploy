@@ -48,7 +48,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "name": "[concat(parameters('rootDeploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg')]",      
+      "name": "virtualnetwork",      
       "apiVersion": "2022-09-01",
       "tags": {},
       "resourceGroup": "[concat(parameters('rootDeploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg')]",
@@ -85,12 +85,12 @@
       "managedBy": "Someone",
       "properties": {},
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', concat(parameters('rootDeploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg'))]"
+        "[resourceId('Microsoft.Resources/deployments', 'virtualnetwork')]"
       ]
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "name": "[concat(parameters('rootDeploymentName'), '-loganalytics-', parameters('deploymentRegion'), '-rg')]",      
+      "name": "loganalytics",      
       "apiVersion": "2022-09-01",
       "tags": {},
       "resourceGroup": "[concat(parameters('rootDeploymentName'), '-loganalytics-', parameters('deploymentRegion'), '-rg')]",
