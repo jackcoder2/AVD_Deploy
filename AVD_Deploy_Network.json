@@ -280,9 +280,6 @@
               "networkSecurityGroup": {
                 "id": "[resourceId('Microsoft.Network/networkSecurityGroups', concat(variables('subnetTenantName'), '-', variables('DeploymentSpecificUniqueString'),'-nsg'))]"
               },
-              "natGateway": {
-                "id": "[resourceId('Microsoft.Network/natGateways',concat('hubVirtualNetwork-NATGateway-', variables('DeploymentSpecificUniqueString'),'-nat'))]"
-              },
               "delegations": [],
               "privateEndpointNetworkPolicies": "Disabled",
               "privateLinkServiceNetworkPolicies": "Enabled"
@@ -297,8 +294,7 @@
         "[resourceId('Microsoft.Network/networkSecurityGroups', concat(variables('subnetTenantName'), '-', variables('DeploymentSpecificUniqueString'),'-nsg'))]",
         "[resourceId('Microsoft.Network/networkSecurityGroups', concat(variables('subnetServicesName'), '-', variables('DeploymentSpecificUniqueString'),'-nsg'))]",
         "[resourceId('Microsoft.Network/networkSecurityGroups', concat(variables('subnetPlatformName'), '-', variables('DeploymentSpecificUniqueString'),'-nsg'))]",
-        "[resourceId('Microsoft.Network/networkSecurityGroups', concat(variables('SubnetDirectoryName'), '-', variables('DeploymentSpecificUniqueString'),'-nsg'))]",
-        "[resourceId('Microsoft.Network/natGateways', concat('hubVirtualNetwork-NATGateway-', variables('DeploymentSpecificUniqueString'),'-nat'))]"
+        "[resourceId('Microsoft.Network/networkSecurityGroups', concat(variables('SubnetDirectoryName'), '-', variables('DeploymentSpecificUniqueString'),'-nsg'))]"
       ]
     },
     // Microsoft.Network/bastionHosts - virtualNetwork-Bastion
