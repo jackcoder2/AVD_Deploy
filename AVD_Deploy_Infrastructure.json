@@ -71,7 +71,7 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/resourceGroups', concat(parameters('rootDeploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg'))]"
+        "[resourceId(resourceGroup().name, 'Microsoft.Resources/resourceGroups', concat(parameters('rootDeploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg'))]"
       ]
     },
 
@@ -84,7 +84,9 @@
       "tags": {},
       "managedBy": "Someone",
       "properties": {},
-      "dependsOn": []
+      "dependsOn": [
+        "[resourceId(resourceGroup().name, 'Microsoft.Resources/deployments', 'virtualnetwork')]"
+      ]
     },
     {
       "type": "Microsoft.Resources/deployments",
@@ -101,8 +103,7 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/deployments', 'virtualnetwork')]",
-        "[resourceId('Microsoft.Resources/resourceGroups', concat(parameters('rootDeploymentName'), '-loganalytics-', parameters('deploymentRegion'), '-rg'))]"
+        "[resourceId(resourceGroup().name, 'Microsoft.Resources/resourceGroups', concat(parameters('rootDeploymentName'), '-loganalytics-', parameters('deploymentRegion'), '-rg'))]"
       ]
     }
   ],
