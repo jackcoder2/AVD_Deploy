@@ -17,12 +17,6 @@
             "10.120.116.5"
         ]
     },
-    "enableFrontDoor": {
-        "value": true
-    },
-    "enableFirewall": {
-        "value": false
-    },
     "enableBastion": {
         "value": false
     }    

@@ -26,20 +26,6 @@
         "description": "Specify all DNS servers for this deployment, should be specified as an array of IP Addresses, [\"10.120.116.4\",\"10.120.116.5\"], for example."
       }
     },
-    "enableFrontDoor": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Enable an Azure Firewall service on the hub to create public endpoints for services in the hub virtual network, this is a billable option."
-      }
-    },
-    "enableFirewall": {
-      "type": "bool",
-      "defaultValue": false,
-      "metadata": {
-        "description": "Enable an Azure Firewall service on the hub to create public endpoints for services in the hub virtual network, this is a billable option."
-      }
-    },
     "enableBastion": {
       "type": "bool",
       "defaultValue": false,
@@ -73,12 +59,6 @@
           },
           "dnsServers": {
             "value": "[array(parameters('dnsServers'))]"
-          },
-          "enableFrontDoor": {
-            "value": "[parameters('enableFrontDoor')]"
-          },
-          "enableFirewall": {
-            "value": "[parameters('enableFirewall')]"
           },
           "enableBastion": {
             "value": "[parameters('enableBastion')]"
