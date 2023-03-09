@@ -71,7 +71,7 @@
         }
       },
       "dependsOn": [
-        "[resourceId(resourceGroup().name, 'Microsoft.Resources/resourceGroups', concat(parameters('rootDeploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg'))]"
+        "[resourceId(subscription().id, resourceGroup().name, 'Microsoft.Resources/resourceGroups', concat(parameters('rootDeploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg'))]"
       ]
     },
 
