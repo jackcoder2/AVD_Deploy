@@ -85,7 +85,7 @@
       "managedBy": "Someone",
       "properties": {},
       "dependsOn": [
-        "[resourceId(subscription().subscriptionId, concat(parameters('rootDeploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg'), 'Microsoft.Network/virtualNetworks', concat('avd-virtualnetwork-hub-', resourceGroup().location))]"
+        "/subscriptions/6b221c5d-c6a4-4852-bdc5-b5116abcd867/resourceGroups/avdDeploy-hub-vnet-westus3-rg/providers/Microsoft.Resources/deployments/virtualnetwork"
       ]
     },
     {
@@ -105,6 +105,8 @@
       "dependsOn": [
         "[resourceId('Microsoft.Resources/resourceGroups', concat(parameters('rootDeploymentName'), '-loganalytics-', parameters('deploymentRegion'), '-rg'))]"
       ]
+
+
     }
   ],
   "outputs": {
