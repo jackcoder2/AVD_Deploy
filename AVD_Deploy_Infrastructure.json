@@ -66,6 +66,9 @@
           },
           "enableBastion": {
             "value": "[parameters('enableBastion')]"
+          },
+          "virtualNetworkResourceGroupName": {
+            "value": "[variables('virtualNetworkResourceGroupName')]"
           }
         },
         "templateLink": {
@@ -103,7 +106,8 @@
       "dependsOn": [
         //"[reference('virtualNetworkDeployment').outputs.virtualNetworkResourceID.value]",
         "[resourceId('Microsoft.Resources/resourceGroups', variables('logAnalyticsResourceGroupName'))]",
-        "[resourceId('Microsoft.Resources/deployments', 'virtualNetworkDeployment')]"        
+        "virtualNetworkDeployment"        
+        //"[resourceId('Microsoft.Resources/deployments', 'virtualNetworkDeployment')]"        
         //"[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', parameters('rootDeploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg', '/providers/Microsoft.Resources/deployments/virtualnetwork')]"
       ]
     },
@@ -140,7 +144,8 @@
       "dependsOn": [
         //"[reference('virtualNetworkDeployment').outputs.virtualNetworkResourceID.value]",
         "[resourceId('Microsoft.Resources/resourceGroups', variables('keyVaultResourceGroupName'))]",
-        "[resourceId('Microsoft.Resources/deployments', 'virtualNetworkDeployment')]"
+        "virtualNetworkDeployment"
+        //"[resourceId('Microsoft.Resources/deployments', 'virtualNetworkDeployment')]"
         //"[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', parameters('rootDeploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg', '/providers/Microsoft.Resources/deployments/virtualnetwork')]"
       ]
     }

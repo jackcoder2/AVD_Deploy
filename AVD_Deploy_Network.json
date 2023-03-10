@@ -20,15 +20,26 @@
       "metadata": {
         "description": "Enable an Azure Bastion service on the hub to access virtual machines without a public IP address, this is a billable option."
       }
+    },
+    "virtualNetworkResourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
     }
 
 
   },
   "variables": {
-    "DeploymentSpecificUniqueString": "[uniqueString(resourceGroup().id, subscription().tenantId)]",
+//    "DeploymentSpecificUniqueString": "[uniqueString(resourceGroup().id, subscription().tenantId)]",
 
     // --== Networking ==--
-    "virtualNetworkName": "[concat('avd-virtualnetwork-hub-', resourceGroup().location)]",
+//    "virtualNetworkName": "[concat('avd-virtualnetwork-hub-', resourceGroup().location)]",
+
+    "DeploymentSpecificUniqueString": "[uniqueString(subscription().tenantId)]",
+
+    // --== Networking ==--
+    "virtualNetworkName": "[concat('avd-virtualnetwork-hub-')]",
 
     "networkAddressSpace": "[split(parameters('hubNetworkAddressSpace'),'.')]",
 
