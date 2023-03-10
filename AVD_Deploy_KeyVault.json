@@ -60,7 +60,9 @@
         "tags": {},
         "properties": {
             "subnet": {
-              "id": "[parameters('subnetServicesResourceID')]" // "[resourceId(subscription().subscriptionId, parameters('virtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetServicesName'))]"
+              "id": "[concat(parameters('virtualNetworkResourceID'), '/subnets/Services')]"
+              
+              // "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', parameters('virtualNetworkResourceGroupName'), '/providers/', parameters('subnetServicesResourceID'))]"
             },
             "privateLinkServiceConnections": [
                 {

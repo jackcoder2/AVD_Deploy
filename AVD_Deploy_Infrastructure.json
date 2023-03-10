@@ -119,7 +119,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "name": "loganalytics",      
+      "name": "keyvault",      
       "apiVersion": "2022-09-01",
       "tags": {},
       "resourceGroup": "[variables('keyVaultResourceGroupName')]",
