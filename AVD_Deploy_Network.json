@@ -23,10 +23,10 @@
     }
   },
   "variables": {
-   // "DeploymentSpecificUniqueString": "[uniqueString(resourceGroup().id, subscription().tenantId)]",
+    "DeploymentSpecificUniqueString": "[uniqueString(resourceGroup().id, subscription().tenantId)]",
 
     // --== Networking ==--
-  //  "virtualNetworkName": "[concat('avd-virtualnetwork-hub-', resourceGroup().location)]",
+    "virtualNetworkName": "[concat('avd-virtualnetwork-hub-', resourceGroup().location)]",
 
     "networkAddressSpace": "[split(parameters('hubNetworkAddressSpace'),'.')]",
 
