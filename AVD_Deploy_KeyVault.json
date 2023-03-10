@@ -60,9 +60,9 @@
         "tags": {},
         "properties": {
             "subnet": {
-              "id": "[concat(parameters('virtualNetworkResourceID'), '/subnets/Services')]"
+              //"id": "[concat(parameters('virtualNetworkResourceID'), '/subnets/Services')]"
               
-              // "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', parameters('virtualNetworkResourceGroupName'), '/providers/', parameters('subnetServicesResourceID'))]"
+              "id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/avd-virtualnetwork-hub-westus3/providers/', parameters('subnetServicesResourceID'))]"
             },
             "privateLinkServiceConnections": [
                 {
