@@ -72,7 +72,8 @@
           }
         },
         "templateLink": {
-          "uri": "[uri(deployment().properties.templateLink.uri, 'AVD_Deploy_Network.json')]",
+          //"uri": "[uri(deployment().properties.templateLink.uri, 'AVD_Deploy_Network.json')]",
+          "uri": "https://raw.githubusercontent.com/jackcoder2/AVD_Deploy/main/AVD_Deploy_Network.json",
           "contentVersion": "1.0.0.0"
         }
       },
