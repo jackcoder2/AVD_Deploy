@@ -261,7 +261,7 @@
             }
           },
           {
-            "name": "[variables('SubnetDirectoryName')]",
+            "name": "[variables('subnetDirectoryName')]",
             "properties": {
               "addressPrefix": "[variables('subnetDirectoryCIDR')]",
               "networkSecurityGroup": {
@@ -332,5 +332,29 @@
     }
   ],
   "outputs": {
+    "virtualNetworkResourceID": {
+      "value": "[resourceId('Microsoft.Network/virtualNetworks', variables('virtualNetworkName'))]",
+      "type" : "string"
+    },
+    "subnetFirewallResourceID": {
+      "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetFirewallName'))]",
+      "type" : "string"
+    },
+    "subnetServicesResourceID": {
+      "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetServicesName'))]",
+      "type" : "string"
+    },
+    "subnetPlatformResourceID": {
+      "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetPlatformName'))]",
+      "type" : "string"
+    },
+    "subnetDirectoryResourceID": {
+      "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetDirectoryName'))]",
+      "type" : "string"
+    },
+    "subnetTenantResourceID": {
+      "value": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetTenantName'))]",
+      "type" : "string"
+    }
   }
 }

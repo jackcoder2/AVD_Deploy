@@ -34,24 +34,27 @@
       }
     }
   },
-  "variables": {},
+  "variables": {
+    "virtualNetworkResourceGroupName": "[concat(parameters('rootDeploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg')]",
+    "logAnalyticsResourceGroupName": "[concat(parameters('rootDeploymentName'), '-loganalytics-', parameters('deploymentRegion'), '-rg')]",
+    "keyVaultResourceGroupName": "[concat(parameters('rootDeploymentName'), '-keyvault-', parameters('deploymentRegion'), '-rg')]"
+  },
   "resources": [
     // --== Virtual Network ==--
     {
       "type": "Microsoft.Resources/resourceGroups",
-      "name": "[concat(parameters('rootDeploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg')]",
+      "name": "[variables('virtualNetworkResourceGroupName')]",
       "apiVersion": "2022-09-01",
       "location": "[parameters('deploymentRegion')]",
       "tags": {},
-      "managedBy": "Someone",
-      "properties": {}
+      "managedBy": "Someone"
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "name": "virtualnetwork",      
+      "name": "virtualNetworkDeployment",      
       "apiVersion": "2022-09-01",
       "tags": {},
-      "resourceGroup": "[concat(parameters('rootDeploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg')]",
+      "resourceGroup": "[variables('virtualNetworkResourceGroupName')]",
       "properties": {
         "mode": "Incremental",
         "parameters": {
@@ -66,48 +69,82 @@
           }
         },
         "templateLink": {
-          "uri": "https://raw.githubusercontent.com/jackcoder2/AVD_Deploy/main/AVD_Deploy_Network.json",
+          "uri": "[uri(deployment().properties.templateLink.uri, 'AVD_Deploy_Network.json')]",
           "contentVersion": "1.0.0.0"
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/resourceGroups', concat(parameters('rootDeploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg'))]"
+        "[resourceId('Microsoft.Resources/resourceGroups', variables('virtualNetworkResourceGroupName'))]"
       ]
     },
-
     // --== LogAnalytics ==--
     {
       "type": "Microsoft.Resources/resourceGroups",
-      "name": "[concat(parameters('rootDeploymentName'), '-loganalytics-', parameters('deploymentRegion'), '-rg')]",
+      "name": "[variables('logAnalyticsResourceGroupName')]",
       "apiVersion": "2022-09-01",
       "location": "[parameters('deploymentRegion')]",
       "tags": {},
-      "managedBy": "Someone",
-      "properties": {},
-      "dependsOn": [
-        "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', parameters('rootDeploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg', '/providers/Microsoft.Resources/deployments/virtualnetwork')]"
-      ]
+      "managedBy": "Someone"
     },
     {
       "type": "Microsoft.Resources/deployments",
       "name": "loganalytics",      
       "apiVersion": "2022-09-01",
       "tags": {},
-      "resourceGroup": "[concat(parameters('rootDeploymentName'), '-loganalytics-', parameters('deploymentRegion'), '-rg')]",
+      "resourceGroup": "[variables('logAnalyticsResourceGroupName')]",
       "properties": {
         "mode": "Incremental",
         "parameters": {},
         "templateLink": {
-          "uri": "https://raw.githubusercontent.com/jackcoder2/AVD_Deploy/main/AVD_Deploy_LogAnalytics.json",
+          "uri": "[uri(deployment().properties.templateLink.uri, 'AVD_Deploy_LogAnalytics.json')]",
           "contentVersion": "1.0.0.0"
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/resourceGroups', concat(parameters('rootDeploymentName'), '-loganalytics-', parameters('deploymentRegion'), '-rg'))]"
+        //"[reference('virtualNetworkDeployment').outputs.virtualNetworkResourceID.value]",
+        "[resourceId('Microsoft.Resources/resourceGroups', variables('logAnalyticsResourceGroupName'))]",
+        "[resourceId('Microsoft.Resources/deployments', 'virtualNetworkDeployment')]"        
+        //"[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', parameters('rootDeploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg', '/providers/Microsoft.Resources/deployments/virtualnetwork')]"
       ]
-
-
+    },
+    // --== KeyVault ==--
+    {
+      "type": "Microsoft.Resources/resourceGroups",
+      "name": "[variables('keyVaultResourceGroupName')]",
+      "apiVersion": "2022-09-01",
+      "location": "[parameters('deploymentRegion')]",
+      "tags": {},
+      "managedBy": "Someone"
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "name": "loganalytics",      
+      "apiVersion": "2022-09-01",
+      "tags": {},
+      "resourceGroup": "[variables('keyVaultResourceGroupName')]",
+      "properties": {
+        "mode": "Incremental",
+        "parameters": {
+          "virtualNetworkResourceID": {
+             "value": "[reference('virtualNetworkDeployment').outputs.virtualNetworkResourceID.value]"
+          },
+          "subnetServicesResourceID": {
+             "value": "[reference('virtualNetworkDeployment').outputs.subnetServicesResourceID.value]"
+          }
+        },
+        "templateLink": {
+          "uri": "[uri(deployment().properties.templateLink.uri, 'AVD_Deploy_KeyVault.json')]",
+          "contentVersion": "1.0.0.0"
+        }
+      },
+      "dependsOn": [
+        //"[reference('virtualNetworkDeployment').outputs.virtualNetworkResourceID.value]",
+        "[resourceId('Microsoft.Resources/resourceGroups', variables('keyVaultResourceGroupName'))]",
+        "[resourceId('Microsoft.Resources/deployments', 'virtualNetworkDeployment')]"
+        //"[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', parameters('rootDeploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg', '/providers/Microsoft.Resources/deployments/virtualnetwork')]"
+      ]
     }
+
   ],
   "outputs": {
   }

@@ -6,7 +6,7 @@
     "DeploymentSpecificUniqueString": "[uniqueString(resourceGroup().id, subscription().tenantId)]",
 
     // --== LogAnalytics ==--
-    "logAnalyticsName": "[concat('logAnalytics-', variables('DeploymentSpecificUniqueString'))]",
+    "logAnalyticsName": "[concat('logAnalytics-', variables('DeploymentSpecificUniqueString'))]"
   },
   "resources": [
     //  --== LogAnalytics Workspace with AMPLS ==--
