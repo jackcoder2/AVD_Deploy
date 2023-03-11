@@ -70,8 +70,7 @@
             "customNetworkInterfaceName": "[concat(variables('keyVaultName'),'-private_endpoint-nic')]"
         },
         "dependsOn": [
-          "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]"//,
-          //"[parameters('virtualNetworkResourceID')]"
+          "[resourceId('Microsoft.KeyVault/vaults', variables('keyVaultName'))]"
           ]
     },
     // Microsoft.Network/privateDnsZones - privatelink.vaultcore.azure.net
@@ -80,10 +79,7 @@
       "name": "[variables('keyVaultPrivateDNSName')]",
       "apiVersion": "2020-06-01",
       "location": "global",
-      "properties": {},
-      "dependsOn": [
-        //"[parameters('virtualNetworkResourceID')]"
-      ]
+      "properties": {}
     },
     // Microsoft.Network/privateDnsZones/virtualNetworkLinks - privatelink.vaultcore.azure.net
     {
@@ -98,8 +94,7 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Network/privateDnsZones', variables('keyVaultPrivateDNSName'))]"//,
-        //"[parameters('virtualNetworkResourceID')]"
+        "[resourceId('Microsoft.Network/privateDnsZones', variables('keyVaultPrivateDNSName'))]"
       ]
     }
   ],

@@ -37,7 +37,8 @@
   "variables": {
     "virtualNetworkResourceGroupName": "[concat(parameters('rootDeploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg')]",
     "logAnalyticsResourceGroupName": "[concat(parameters('rootDeploymentName'), '-loganalytics-', parameters('deploymentRegion'), '-rg')]",
-    "keyVaultResourceGroupName": "[concat(parameters('rootDeploymentName'), '-keyvault-', parameters('deploymentRegion'), '-rg')]"
+    "keyVaultResourceGroupName": "[concat(parameters('rootDeploymentName'), '-keyvault-', parameters('deploymentRegion'), '-rg')]",
+    "automationResourceGroupName": "[concat(parameters('rootDeploymentName'), '-automation-', parameters('deploymentRegion'), '-rg')]"
   },
   "resources": [
     // --== Virtual Network ==--
@@ -136,8 +137,49 @@
         "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('keyVaultResourceGroupName'))]",
         "virtualNetworkDeployment"
       ]
+    },
+    // --== Automation ==--
+    {
+      "type": "Microsoft.Resources/resourceGroups",
+      "name": "[variables('automationResourceGroupName')]",
+      "apiVersion": "2022-09-01",
+      "location": "[parameters('deploymentRegion')]",
+      "tags": {},
+      "managedBy": "Someone"
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "name": "keyvault",      
+      "apiVersion": "2022-09-01",
+      "tags": {},
+      "resourceGroup": "[variables('automationResourceGroupName')]",
+      "properties": {
+        "mode": "Incremental",
+        "parameters": {
+          "virtualNetworkResourceID": {
+             "value": "[reference('virtualNetworkDeployment').outputs.virtualNetworkResourceID.value]"
+          },
+          "subnetServicesResourceID": {
+             "value": "[reference('virtualNetworkDeployment').outputs.subnetServicesResourceID.value]"
+          },
+          "logAnalyticsResourceID": {
+             "value": "[reference('virtualNetworkDeployment').outputs.logAnalyticsResourceID.value]"
+          },
+          "logAnalyticsName": {
+             "value": "[reference('virtualNetworkDeployment').outputs.logAnalyticsName.value]"
+          }
+        },
+        "templateLink": {
+          "uri": "[uri(deployment().properties.templateLink.uri, 'AVD_Deploy_Automation.json')]",
+          "contentVersion": "1.0.0.0"
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('automationResourceGroupName'))]",
+        "virtualNetworkDeployment",
+        "[subscriptionResourceId('Microsoft.Resources/deployments', variables('logAnalyticsResourceGroupName'))]"
+      ]
     }
-
   ],
   "outputs": {
   }

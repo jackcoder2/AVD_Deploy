@@ -59,5 +59,13 @@
     }
   ],
   "outputs": {
+    "logAnalyticsResourceID": {
+      "value": "[resourceId('Microsoft.OperationalInsights/workspaces', variables('logAnalyticsName'))]",
+      "type" : "string"
+    },
+    "logAnalyticsName": {
+      "value": "[variables('logAnalyticsName')]",
+      "type" : "string"
+    },
   }
 }
