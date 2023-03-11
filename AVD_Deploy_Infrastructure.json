@@ -74,7 +74,7 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Resources/resourceGroups', variables('virtualNetworkResourceGroupName'))]"
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('virtualNetworkResourceGroupName'))]"
       ]
     },
     // --== LogAnalytics ==--
@@ -101,11 +101,8 @@
         }
       },
       "dependsOn": [
-        //"[reference('virtualNetworkDeployment').outputs.virtualNetworkResourceID.value]",
-        "[resourceId('Microsoft.Resources/resourceGroups', variables('logAnalyticsResourceGroupName'))]",
-        "virtualNetworkDeployment"        
-        //"[resourceId('Microsoft.Resources/deployments', 'virtualNetworkDeployment')]"        
-        //"[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', parameters('rootDeploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg', '/providers/Microsoft.Resources/deployments/virtualnetwork')]"
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('logAnalyticsResourceGroupName'))]",
+        "[subscriptionResourceId('Microsoft.Resources/deployments', 'virtualNetworkDeployment')]"        
       ]
     },
     // --== KeyVault ==--
@@ -128,9 +125,6 @@
         "parameters": {
           "virtualNetworkResourceID": {
              "value": "[reference('virtualNetworkDeployment').outputs.virtualNetworkResourceID.value]"
-          },
-          "subnetServicesResourceID": {
-             "value": "[reference('virtualNetworkDeployment').outputs.subnetServicesResourceID.value]"
           }
         },
         "templateLink": {
@@ -139,11 +133,8 @@
         }
       },
       "dependsOn": [
-        //"[reference('virtualNetworkDeployment').outputs.virtualNetworkResourceID.value]",
-        "[resourceId('Microsoft.Resources/resourceGroups', variables('keyVaultResourceGroupName'))]",
-        "virtualNetworkDeployment"
-        //"[resourceId('Microsoft.Resources/deployments', 'virtualNetworkDeployment')]"
-        //"[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/', parameters('rootDeploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg', '/providers/Microsoft.Resources/deployments/virtualnetwork')]"
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('keyVaultResourceGroupName'))]",
+        "[subscriptionResourceId('Microsoft.Resources/deployments', 'virtualNetworkDeployment')]"
       ]
     }
 

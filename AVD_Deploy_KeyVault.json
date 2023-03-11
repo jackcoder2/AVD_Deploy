@@ -7,12 +7,6 @@
       "metadata": {
         "description": ""
       }
-    },
-    "subnetServicesResourceID": {
-      "type": "string",
-      "metadata": {
-        "description": ""
-      }
     }
   },
   "variables": {
@@ -60,9 +54,7 @@
         "tags": {},
         "properties": {
             "subnet": {
-              //"id": "[concat(parameters('virtualNetworkResourceID'), '/subnets/Services')]"
-              
-              "id": "[concat('/subscriptions/', subscription().subscriptionId, '/resourceGroups/avd-virtualnetwork-hub-westus3/providers/', parameters('subnetServicesResourceID'))]"
+              "id": "[concat(parameters('virtualNetworkResourceID'), '/subnets/Services')]"
             },
             "privateLinkServiceConnections": [
                 {
@@ -108,7 +100,6 @@
       "dependsOn": [
         "[resourceId('Microsoft.Network/privateDnsZones', variables('keyVaultPrivateDNSName'))]",
         "[parameters('virtualNetworkResourceID')]"
-        //"[resourceId(subscription().subscriptionId, parameters('virtualNetworkResourceGroupName'), 'Microsoft.Network/virtualNetworks',variables('virtualNetworkName'))]"
       ]
     }
   ],
