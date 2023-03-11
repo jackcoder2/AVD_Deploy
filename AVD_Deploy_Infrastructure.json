@@ -102,7 +102,7 @@
       },
       "dependsOn": [
         "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('logAnalyticsResourceGroupName'))]",
-        "[subscriptionResourceId('Microsoft.Resources/deployments', 'virtualNetworkDeployment')]"        
+        "virtualNetworkDeployment"
       ]
     },
     // --== KeyVault ==--
@@ -134,7 +134,7 @@
       },
       "dependsOn": [
         "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('keyVaultResourceGroupName'))]",
-        "[subscriptionResourceId('Microsoft.Resources/deployments', 'virtualNetworkDeployment')]"
+        "virtualNetworkDeployment"
       ]
     }
 
