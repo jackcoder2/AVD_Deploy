@@ -68,17 +68,14 @@
         "dependsOn": [
           "[resourceId('Microsoft.RecoveryServices/vaults', variables('recoverVaultName'))]"
           ]
-    }  /*  ,
+    },
     // Microsoft.Network/privateDnsZones - recoveryVault - privatelink.wus3.backup.windowsazure.com
     {
       "type": "Microsoft.Network/privateDnsZones",
       "name": "[variables('recoveryVaultWus3PrivateDNSName')]",
       "apiVersion": "2020-06-01",
       "location": "global",
-      "properties": {},
-      "dependsOn": [
-        "[parameters('virtualNetworkResourceID')]"
-      ]
+      "properties": {}
     },
     // Microsoft.Network/privateDnsZones/virtualNetworkLinks - privatelink.wus3.backup.windowsazure.com
     {
@@ -102,10 +99,7 @@
       "name": "[variables('recoveryVaultBlobPrivateDNSName')]",
       "apiVersion": "2020-06-01",
       "location": "global",
-      "properties": {},
-      "dependsOn": [
-        "[parameters('virtualNetworkResourceID')]"
-      ]
+      "properties": {}
     },
     // Microsoft.Network/privateDnsZones/virtualNetworkLinks - privatelink.blob.core.windows.net
     {
@@ -120,8 +114,7 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Network/privateDnsZones', variables('recoveryVaultBlobPrivateDNSName'))]",
-        "[parameters('virtualNetworkResourceID')]"
+        "[resourceId('Microsoft.Network/privateDnsZones', variables('recoveryVaultBlobPrivateDNSName'))]"
       ]
     },
     // Microsoft.Network/privateDnsZones - recoveryVault - privatelink.queue.core.windows.net
@@ -130,10 +123,7 @@
       "name": "[variables('recoveryVaultQueuePrivateDNSName')]",
       "apiVersion": "2020-06-01",
       "location": "global",
-      "properties": {},
-      "dependsOn": [
-        "[parameters('virtualNetworkResourceID')]"
-      ]
+      "properties": {}
     },
     // Microsoft.Network/privateDnsZones/virtualNetworkLinks - privatelink.queue.core.windows.net
     {
@@ -148,10 +138,9 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Network/privateDnsZones', variables('recoveryVaultQueuePrivateDNSName'))]",
-        "[parameters('virtualNetworkResourceID')]"
+        "[resourceId('Microsoft.Network/privateDnsZones', variables('recoveryVaultQueuePrivateDNSName'))]"
       ]
-    } */
+    }
 
 
 
