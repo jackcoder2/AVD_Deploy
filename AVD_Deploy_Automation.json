@@ -126,7 +126,7 @@
       ]
     },
     // Microsoft.OperationalInsights/workspaces/linkedServices
-    {
+/*     {
         "type": "Microsoft.OperationalInsights/workspaces/linkedServices",
         "name": "[concat(parameters('logAnalyticsName'), '/Automation')]",
         "apiVersion": "2020-08-01",
@@ -137,7 +137,7 @@
         "dependsOn": [
             "[resourceId('Microsoft.Automation/automationAccounts', variables('automationAccName'))]"
         ]
-    },
+    }, */
     // Microsoft.Automation/automationAccounts/providers/diagnosticSettings
     {
         "type": "Microsoft.Automation/automationAccounts/providers/diagnosticSettings",
@@ -174,20 +174,22 @@
         "dependsOn": [
             "[resourceId('Microsoft.Automation/automationAccounts', variables('automationAccName'))]"
         ]
-    },
+    }
+    
+/*
     // Microsoft.OperationalInsights/workspaces/configurationScopes
     {
         "type": "Microsoft.OperationalInsights/workspaces/configurationScopes",
-        "name": "[concat(parameters('logAnalyticsName'), '/MicrosoftDefaultScopeConfig-Updates')]",
+        "name": "[concat(parameters('logAnalyticsName'), '/MicrosoftDefaultScopeConfigUpdates')]",
         "apiVersion": "2015-11-01-preview",
         "location": "[resourceGroup().location]",
         "kind": "SearchComputerGroup",
         "properties": {
             "Include": "[[\"Updates__MicrosoftDefaultComputerGroup\"]]"
         },
-        "id": "[concat(resourceId('microsoft.operationalinsights/workspaces', parameters('logAnalyticsName')), '/configurationScopes/MicrosoftDefaultScopeConfig-Updates')]",  //  /subscriptions/6b221c5d-c6a4-4852-bdc5-b5116abcd867/resourceGroups/AVDHub/providers/Microsoft.OperationalInsights/workspaces/logAnalytics-6jbubn4pofhx4/configurationScopes/MicrosoftDefaultScopeConfig-Updates
+        "id": "[concat(subscription().id, '/resourceGroups/', resourceGroup().name, '/providers/Microsoft.OperationalInsights/workspaces/', parameters('logAnalyticsName'), '/configurationScopes/MicrosoftDefaultScopeConfigUpdates')]", // "[concat(parameters('logAnalyticsResourceID'), '/configurationScopes/MicrosoftDefaultScopeConfigUpdates')]", // "[concat(parameters('logAnalyticsResourceID'), '/configurationScopes/MicrosoftDefaultScopeConfig-Updates')]",  //  /subscriptions/6b221c5d-c6a4-4852-bdc5-b5116abcd867/resourceGroups/AVDHub/providers/Microsoft.OperationalInsights/workspaces/logAnalytics-6jbubn4pofhx4/configurationScopes/MicrosoftDefaultScopeConfig-Updates
         "dependsOn": [
-            "[resourceId('microsoft.operationalinsights/workspaces', parameters('logAnalyticsName'))]"
+            "[parameters('logAnalyticsResourceID')]"
         ]
     },
     // Microsoft.OperationsManagement/solutions
@@ -203,19 +205,21 @@
             "publisher": "Microsoft"
         },
         "properties": {
-            "workspaceResourceId": "[resourceId('microsoft.operationalinsights/workspaces', parameters('logAnalyticsName'))]",
+            "workspaceResourceId": "[parameters('logAnalyticsResourceID')]",
             "configurations": [
                 {
                     "Name": "SolutionTargeting",
-                    "Value": "MicrosoftDefaultScopeConfig-Updates"
+                    "Value": "MicrosoftDefaultScopeConfigUpdates"
                 }
             ]
         },
         "id": "[concat(resourceGroup().id, '/providers/Microsoft.OperationsManagement/solutions/Updates(', parameters('logAnalyticsName'), ')')]", // "[Concat('/subscriptions/', parameters('subscriptionId'), '/resourceGroups/', resourceGroup().Name, '/providers/Microsoft.OperationsManagement/solutions/Updates(', variables('logAnalyticsName'), ')')]",
         "dependsOn": [
-            "[resourceId('microsoft.operationalinsights/workspaces', parameters('logAnalyticsName'))]"
+            "[parameters('logAnalyticsResourceID')]"
         ]
     }
+*/
+
   ],
   "outputs": {
   }
