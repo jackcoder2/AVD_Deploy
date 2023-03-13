@@ -13,20 +13,19 @@
       "metadata": {
         "description": ""
       }
+    },
+    "logAnalyticsResourceID": {
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "logAnalyticsName": {
+      "type": "string",
+      "metadata": {
+        "description": "Enable an Azure Firewall service on the hub to create public endpoints for services in the hub virtual network, this is a billable option."
+      }
     }
-    // ,
-    // "logAnalyticsResourceID": {
-    //   "type": "string",
-    //   "metadata": {
-    //     "description": ""
-    //   }
-    // },
-    // "logAnalyticsName": {
-    //   "type": "string",
-    //   "metadata": {
-    //     "description": "Enable an Azure Firewall service on the hub to create public endpoints for services in the hub virtual network, this is a billable option."
-    //   }
-    // }
   },
   "variables": {
     "DeploymentSpecificUniqueString": "[uniqueString(resourceGroup().id, subscription().tenantId)]",

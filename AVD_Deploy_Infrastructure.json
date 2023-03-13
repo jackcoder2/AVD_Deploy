@@ -161,14 +161,13 @@
           },
           "subnetServicesResourceID": {
              "value": "[reference('virtualNetworkDeployment').outputs.subnetServicesResourceID.value]"
+          },
+          "logAnalyticsResourceID": {
+             "value": "[reference('logAnalyticsDeployment').outputs.logAnalyticsResourceID.value]"
+          },
+          "logAnalyticsName": {
+             "value": "[reference('logAnalyticsDeployment').outputs.logAnalyticsName.value]"
           }
-          // ,
-          // "logAnalyticsResourceID": {
-          //    "value": "[reference('virtualNetworkDeployment').outputs.logAnalyticsResourceID.value]"
-          // },
-          // "logAnalyticsName": {
-          //    "value": "[reference('virtualNetworkDeployment').outputs.logAnalyticsName.value]"
-          // }
         },
         "templateLink": {
           "uri": "[uri(deployment().properties.templateLink.uri, 'AVD_Deploy_Automation.json')]",
