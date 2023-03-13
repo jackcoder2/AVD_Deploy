@@ -39,8 +39,8 @@
       "properties": {
         "publicNetworkAccess": "Disabled"
       }
-    },
-    // Microsoft.Network/privateEndpoints - recoveryVault
+    } // ,
+/*     // Microsoft.Network/privateEndpoints - recoveryVault
     {
         "type": "Microsoft.Network/privateEndpoints",
         "name": "[concat(variables('recoverVaultName'),'-private_endpoint')]",
@@ -153,7 +153,12 @@
         "[resourceId('Microsoft.Network/privateDnsZones', variables('recoveryVaultQueuePrivateDNSName'))]",
         "[parameters('virtualNetworkResourceID')]"
       ]
-    }
+    } */
+
+
+
+
+
     // ,
     // // Microsoft.RecoveryServices/vaults/privateEndpointConnections
     // {
