@@ -89,7 +89,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "name": "loganalytics",      
+      "name": "logAnalyticsDeployment",      
       "apiVersion": "2022-09-01",
       "tags": {},
       "resourceGroup": "[variables('logAnalyticsResourceGroupName')]",
@@ -117,7 +117,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "name": "keyvault",      
+      "name": "keyVaultDeployment",      
       "apiVersion": "2022-09-01",
       "tags": {},
       "resourceGroup": "[variables('keyVaultResourceGroupName')]",
@@ -149,7 +149,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "name": "keyvault",      
+      "name": "automationDeployment",      
       "apiVersion": "2022-09-01",
       "tags": {},
       "resourceGroup": "[variables('automationResourceGroupName')]",
@@ -177,7 +177,7 @@
       "dependsOn": [
         "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('automationResourceGroupName'))]",
         "virtualNetworkDeployment",
-        "[subscriptionResourceId('Microsoft.Resources/deployments', variables('logAnalyticsResourceGroupName'))]"
+        "logAnalyticsDeployment"
       ]
     }
   ],
