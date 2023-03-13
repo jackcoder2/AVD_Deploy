@@ -38,7 +38,8 @@
     "virtualNetworkResourceGroupName": "[concat(parameters('rootDeploymentName'), '-vnet-', parameters('deploymentRegion'), '-rg')]",
     "logAnalyticsResourceGroupName": "[concat(parameters('rootDeploymentName'), '-loganalytics-', parameters('deploymentRegion'), '-rg')]",
     "keyVaultResourceGroupName": "[concat(parameters('rootDeploymentName'), '-keyvault-', parameters('deploymentRegion'), '-rg')]",
-    "automationResourceGroupName": "[concat(parameters('rootDeploymentName'), '-automation-', parameters('deploymentRegion'), '-rg')]"
+    "automationResourceGroupName": "[concat(parameters('rootDeploymentName'), '-automation-', parameters('deploymentRegion'), '-rg')]",
+    "recoveryVaultResourceGroupName": "[concat(parameters('rootDeploymentName'), '-recoveryvault-', parameters('deploymentRegion'), '-rg')]"
   },
   "resources": [
     // --== Virtual Network ==--
@@ -178,6 +179,41 @@
         "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('automationResourceGroupName'))]",
         "virtualNetworkDeployment",
         "logAnalyticsDeployment"
+      ]
+    },
+    // --== Recovery Vault ==--
+    {
+      "type": "Microsoft.Resources/resourceGroups",
+      "name": "[variables('recoveryVaultResourceGroupName')]",
+      "apiVersion": "2022-09-01",
+      "location": "[parameters('deploymentRegion')]",
+      "tags": {},
+      "managedBy": "Someone"
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "name": "recoveryVaultDeployment",      
+      "apiVersion": "2022-09-01",
+      "tags": {},
+      "resourceGroup": "[variables('recoveryVaultResourceGroupName')]",
+      "properties": {
+        "mode": "Incremental",
+        "parameters": {
+          "virtualNetworkResourceID": {
+             "value": "[reference('virtualNetworkDeployment').outputs.virtualNetworkResourceID.value]"
+          },
+          "subnetServicesResourceID": {
+             "value": "[reference('virtualNetworkDeployment').outputs.subnetServicesResourceID.value]"
+          }
+        },
+        "templateLink": {
+          "uri": "[uri(deployment().properties.templateLink.uri, 'AVD_Deploy_RecoveryVault.json')]",
+          "contentVersion": "1.0.0.0"
+        }
+      },
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('recoveryVaultResourceGroupName'))]",
+        "virtualNetworkDeployment"
       ]
     }
   ],
