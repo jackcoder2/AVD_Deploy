@@ -126,20 +126,20 @@
       ]
     },
     // Microsoft.OperationalInsights/workspaces/linkedServices
-    {
-        "type": "Microsoft.OperationalInsights/workspaces/linkedServices",
-        "name": "[concat(parameters('logAnalyticsName'), '/Automation')]",
-        "apiVersion": "2020-08-01",
-        "location": "[resourceGroup().location]",
-        "properties": {
-            "resourceId": "[resourceId('Microsoft.Automation/automationAccounts', variables('automationAccName'))]"
-        },
-        "dependsOn": [
-            "[resourceId('Microsoft.Automation/automationAccounts', variables('automationAccName'))]"
-        ]
-    } //,
+    // {
+    //     "type": "Microsoft.OperationalInsights/workspaces/linkedServices",
+    //     "name": "[concat(parameters('logAnalyticsName'), '/Automation')]",
+    //     "apiVersion": "2020-08-01",
+    //     "location": "[resourceGroup().location]",
+    //     "properties": {
+    //         "resourceId": "[resourceId('Microsoft.Automation/automationAccounts', variables('automationAccName'))]"
+    //     },
+    //     "dependsOn": [
+    //         "[resourceId('Microsoft.Automation/automationAccounts', variables('automationAccName'))]"
+    //     ]
+    // },
     // Microsoft.Automation/automationAccounts/providers/diagnosticSettings
-/*     {
+    {
         "type": "Microsoft.Automation/automationAccounts/providers/diagnosticSettings",
         "name": "[concat(variables('automationAccName'), '/', 'Microsoft.Insights/service')]",
         "apiVersion": "2021-05-01-preview",
@@ -174,7 +174,7 @@
         "dependsOn": [
             "[resourceId('Microsoft.Automation/automationAccounts', variables('automationAccName'))]"
         ]
-    } */
+    }
     
 /*
     // Microsoft.OperationalInsights/workspaces/configurationScopes
