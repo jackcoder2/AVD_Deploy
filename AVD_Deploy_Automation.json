@@ -124,11 +124,9 @@
         "[resourceId('Microsoft.Network/privateDnsZones', variables('automationAccPrivateDNSName'))]",
         "[resourceId('Microsoft.Network/privateEndpoints', concat(variables('automationAccName'),'-private_endpoint'))]"
       ]
-    }
-    
-    //,
+    },
     // Microsoft.OperationalInsights/workspaces/linkedServices
-/*     {
+    {
         "type": "Microsoft.OperationalInsights/workspaces/linkedServices",
         "name": "[concat(parameters('logAnalyticsName'), '/Automation')]",
         "apiVersion": "2020-08-01",
@@ -139,7 +137,7 @@
         "dependsOn": [
             "[resourceId('Microsoft.Automation/automationAccounts', variables('automationAccName'))]"
         ]
-    }, */
+    } //,
     // Microsoft.Automation/automationAccounts/providers/diagnosticSettings
 /*     {
         "type": "Microsoft.Automation/automationAccounts/providers/diagnosticSettings",
