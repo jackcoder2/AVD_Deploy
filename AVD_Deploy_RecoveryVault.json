@@ -66,8 +66,7 @@
             "customNetworkInterfaceName": "[concat(variables('recoverVaultName'),'-private_endpoint-nic')]"
         },
         "dependsOn": [
-          "[resourceId('Microsoft.RecoveryServices/vaults', variables('recoverVaultName'))]",
-          "[parameters('virtualNetworkResourceID')]"
+          "[resourceId('Microsoft.RecoveryServices/vaults', variables('recoverVaultName'))]"
           ]
     }  /*  ,
     // Microsoft.Network/privateDnsZones - recoveryVault - privatelink.wus3.backup.windowsazure.com
@@ -94,8 +93,7 @@
         }
       },
       "dependsOn": [
-        "[resourceId('Microsoft.Network/privateDnsZones', variables('recoveryVaultWus3PrivateDNSName'))]",
-        "[parameters('virtualNetworkResourceID')]"
+        "[resourceId('Microsoft.Network/privateDnsZones', variables('recoveryVaultWus3PrivateDNSName'))]"
       ]
     },
     // Microsoft.Network/privateDnsZones - recoveryVault - privatelink.blob.core.windows.net

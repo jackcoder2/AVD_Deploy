@@ -62,7 +62,7 @@
         "tags": {},
         "properties": {
             "subnet": {
-                "id": "[parameters('subnetServicesResourceID')]" // "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('virtualNetworkName'), variables('subnetServicesName'))]"
+                "id": "[parameters('subnetServicesResourceID')]"
             },
             "privateLinkServiceConnections": [
                 {
