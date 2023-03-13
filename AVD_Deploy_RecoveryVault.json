@@ -39,8 +39,8 @@
       "properties": {
         "publicNetworkAccess": "Disabled"
       }
-    } // ,
-/*     // Microsoft.Network/privateEndpoints - recoveryVault
+    },
+     // Microsoft.Network/privateEndpoints - recoveryVault
     {
         "type": "Microsoft.Network/privateEndpoints",
         "name": "[concat(variables('recoverVaultName'),'-private_endpoint')]",
@@ -69,7 +69,7 @@
           "[resourceId('Microsoft.RecoveryServices/vaults', variables('recoverVaultName'))]",
           "[parameters('virtualNetworkResourceID')]"
           ]
-    },
+    }  /*  ,
     // Microsoft.Network/privateDnsZones - recoveryVault - privatelink.wus3.backup.windowsazure.com
     {
       "type": "Microsoft.Network/privateDnsZones",
