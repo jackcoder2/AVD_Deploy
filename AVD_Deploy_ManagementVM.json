@@ -275,7 +275,7 @@
         // Microsoft.KeyVault/vaults/secrets- Store Local creds
         {
             "type": "Microsoft.Resources/deployments",
-            "name": "[concat(variables('managementVMName'), '-storeLocalCreds']",
+            "name": "[concat(variables('managementVMName'), '-storeLocalCreds')]",
             "apiVersion": "2022-09-01",
             "resourceGroup": "[parameters('keyVaultResourceGroupName')]",
             "properties": {
