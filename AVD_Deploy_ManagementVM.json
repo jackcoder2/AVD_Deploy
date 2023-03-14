@@ -340,11 +340,11 @@
                             "tags": {},
                             "properties": {
                                 "protectedItemType": "Microsoft.Compute/virtualMachines",
-                                "policyId": "[resourceId('Microsoft.RecoveryServices/vaults/backupPolicies', parameters('recoverVaultName'), concat(variables('managementVMName'), '-backupPolicy'))]",
+                                "policyId": "[resourceId('Microsoft.RecoveryServices/vaults/backupPolicies', concat(parameters('recoverVaultName'), '/',variables('managementVMName'), '-backupPolicy'))]",
                                 "sourceResourceId": "[resourceId(subscription().subscriptionId,resourceGroup().name,'Microsoft.Compute/virtualMachines',variables('managementVMName'))]"
                             },
                             "dependsOn": [
-                                "[resourceId('Microsoft.RecoveryServices/vaults/backupPolicies', parameters('recoverVaultName'), concat(variables('managementVMName'), '-backupPolicy'))]"
+                                "[resourceId('Microsoft.RecoveryServices/vaults/backupPolicies', concat(parameters('recoverVaultName'), '/',variables('managementVMName'), '-backupPolicy'))]"
                             ]
                         }
                     ]
