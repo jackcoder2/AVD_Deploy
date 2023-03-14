@@ -111,7 +111,7 @@
                     "scheduleRunFrequency": "Daily",
                     "scheduleRunDays": null,
                     "scheduleRunTimes": [
-                        "2023-03-13T12:00:00.000Z"
+                        "2023-03-13T4:30Z"
                     ]
                 }
             },
@@ -120,7 +120,7 @@
                     "retentionPolicyType": "LongTermRetentionPolicy",
                     "dailySchedule": {
                         "retentionTimes": [
-                            "2023-03-13T12:00:00Z"
+                            "2023-03-13T4:30Z"
                         ],
                         "retentionDuration": {
                             "count": 7,
