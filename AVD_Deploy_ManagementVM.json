@@ -335,7 +335,7 @@
                         },
                         {
                             "type": "Microsoft.RecoveryServices/vaults/backupFabrics/protectionContainers/protectedItems",
-                            "name": "[concat(parameters('recoverVaultName'), '/', variables('managementVMName'), '-protected')]",
+                            "name": "[concat(parameters('recoverVaultName'), '/', variables('managementVMName'), '/protected')]",
                             "apiVersion": "2023-01-01",
                             "tags": {},
                             "properties": {
