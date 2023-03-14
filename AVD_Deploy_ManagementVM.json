@@ -267,7 +267,7 @@
                     "mdmId": ""
                 }
             },
-            "condition": "[if(equals(parameters('domainType'), 'AzureAD'), 'true', 'false')]",
+            "condition": "[if(equals(parameters('domainType'), 'AzureAD'), bool('true'), bool('false'))]",
             "dependsOn": [
                 "[concat('Microsoft.Compute/virtualMachines/', variables('managementVMName'))]"
             ]
