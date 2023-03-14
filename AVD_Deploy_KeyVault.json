@@ -99,5 +99,9 @@
     }
   ],
   "outputs": {
+    "keyVaultName": {
+      "value": "[variables('keyVaultName')]",
+      "type" : "string"
+    }
   }
 }

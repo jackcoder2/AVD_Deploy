@@ -1,0 +1,376 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "domainType": {
+            "type": "string",
+            "allowedValues": [ "AzureAD", "Domain", "Local" ],
+            "defaultValue": "AzureAD",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "domainName": {
+            "type": "string",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "domainJoinAdmin": {
+            "type": "string",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "domainJoinPassword": {
+            "type": "securestring",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "notificationEmail": {
+            "type": "string",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "deploymentTimezone": {
+            "type": "string",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "subnetPlatformResourceID": {
+            "type": "string",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "keyVaultResourceGroupName": {
+            "type": "string",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "recoveryVaultResourceGroupName": {
+            "type": "string",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "keyVaultName": {
+            "type": "string",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "recoverVaultName": {
+            "type": "string",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "managementVMLocalAdminName": {
+            "type": "string",
+            "defaultValue": "[uniqueString('d2222689-cd42-4d1d-b354-1260e2b7aac9', tenant().tenantId)]",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "managementVMLocalAdminPassword": {
+            "type": "securestring",
+            "defaultValue": "[concat('k#P', uniqueString(resourceGroup().id, subscription().id, tenant().tenantId), 'c@7j', '^')]",
+            "metadata": {
+                "description": ""
+            }
+        }
+    },
+    "variables": {
+        "DeploymentSpecificUniqueString": "[uniqueString(resourceGroup().id, subscription().tenantId)]",
+
+        // --== Management VM ==--
+        "managementVMName": "[concat('managementVM-', variables('DeploymentSpecificUniqueString'))]",
+        "managementVMSize": "Standard_DS1_v2", // Standard_DS1_v2 (1 cpu, 3.5 GB), Standard_D2s_v3 (2 cpu, 8 GB)
+        "managementVMTimezone": "[parameters('deploymentTimezone')]",
+        "managementVMAutoshutdown": {
+            "status": "Enabled",
+            "time": "23:00",
+            "timeZone": "[parameters('deploymentTimezone')]",
+            "notification": {
+                "status": "Disabled",
+                "locale": "en",
+                "email": "[parameters('notificationEmail')]"
+            }
+        },
+        "managementVMBackup": {
+            "itemname": "[concat('vm;iaasvmcontainerv2;', resourceGroup().name, ';', variables('managementVMName'))]",
+            "policyname": "managementMachineDailyPolicy",
+            "schedule": {
+                "value": {
+                    "schedulePolicyType": "SimpleSchedulePolicy",
+                    "scheduleRunFrequency": "Daily",
+                    "scheduleRunDays": null,
+                    "scheduleRunTimes": [
+                        "2023-03-13T12:00:00.000Z"
+                    ]
+                }
+            },
+            "retention": {
+                "value": {
+                    "retentionPolicyType": "LongTermRetentionPolicy",
+                    "dailySchedule": {
+                        "retentionTimes": [
+                            "2023-03-13T12:00:00.000Z"
+                        ],
+                        "retentionDuration": {
+                            "count": 7,
+                            "durationType": "Days"
+                        }
+                    },
+                    "weeklySchedule": null,
+                    "monthlySchedule": null,
+                    "yearlySchedule": null
+                }
+            },
+            "policytimezone": "[parameters('deploymentTimezone')]",
+            "instantrestoreretentiondays": 2
+        }
+    },
+    "resources": [
+        // Microsoft.Network/networkInterfaces - Management VM NIC
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "name": "[concat(variables('managementVMName'), '-nic')]",
+            "apiVersion": "2022-07-01",
+            "location": "[resourceGroup().location]",
+            "tags": {},
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "subnet": {
+                                "id": "[parameters('subnetPlatformResourceID')]"
+                            },
+                            "privateIPAllocationMethod": "Dynamic"
+                        }
+                    }
+                ],
+                "enableAcceleratedNetworking": "True"
+            }
+        },
+        // Microsoft.Compute/virtualMachines - Management VM
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "name": "[variables('managementVMName')]",
+            "apiVersion": "2022-11-01",
+            "location": "[resourceGroup().location]",
+            "tags": {},
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[variables('managementVMSize')]"
+                },
+                "storageProfile": {
+                    "osDisk": {
+                        "createOption": "fromImage",
+                        "managedDisk": {
+                            "storageAccountType": "Premium_LRS" // Standard_LRS, StandardSSD_LRS or Premium_LRS
+                        },
+                        "deleteOption": "Delete"
+                    },
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2019-datacenter-gensecond",
+                        "version": "latest"
+                    }
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', concat(variables('managementVMName'), '-nic'))]",
+                            "properties": {
+                                "deleteOption": "Delete"
+                            }
+                        }
+                    ]
+                },
+                "osProfile": {
+                    "computerName": "[take(variables('managementVMName'), 15)]",
+                    "adminUsername": "[parameters('managementVMLocalAdminName')]",
+                    "adminPassword": "[parameters('managementVMLocalAdminPassword')]",
+                    "windowsConfiguration": {
+                        "enableAutomaticUpdates": true,
+                        "provisionVmAgent": true,
+                        "patchSettings": {
+                            "enableHotpatching": "false",
+                            "patchMode": "AutomaticByOS"
+                        },
+                        "timeZone": "[variables('managementVMTimezone')]"
+                    }
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true
+                    }
+                }
+            },
+            "identity": {
+                "type": "systemAssigned"
+            },
+            "zones": [
+                "1"
+            ],
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', concat(variables('managementVMName'), '-nic'))]"
+            ]
+        },
+        // Microsoft.DevTestLab/schedules - Management VM Auto shutdown
+        {
+            "type": "Microsoft.DevTestLab/schedules",
+            "name": "[concat('shutdown-computevm-', variables('managementVMName'))]",
+            "apiVersion": "2018-09-15",
+            "location": "[resourceGroup().location]",
+            "tags": {},
+            "properties": {
+                "status": "[variables('managementVMAutoshutdown').status]",
+                "taskType": "ComputeVmShutdownTask",
+                "dailyRecurrence": {
+                    "time": "[variables('managementVMAutoshutdown').time]"
+                },
+                "timeZoneId": "[variables('managementVMAutoshutdown').timeZone]",
+                "targetResourceId": "[resourceId('Microsoft.Compute/virtualMachines', variables('managementVMName'))]",
+                "notificationSettings": {
+                    "status": "[variables('managementVMAutoshutdown').notification.status]",
+                    "notificationLocale": "[variables('managementVMAutoshutdown').notification.locale]",
+                    "timeInMinutes": "30",
+                    "emailRecipient": "[variables('managementVMAutoshutdown').notification.email]"
+                }
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', variables('managementVMName'))]"
+            ]
+        },
+        // Microsoft.Compute/virtualMachines/extensions - Management VM join Azure AD
+        {
+            "type": "Microsoft.Compute/virtualMachines/extensions",
+            "name": "[concat(variables('managementVMName'), '/AADLoginForWindows')]",
+            "apiVersion": "2022-11-01",
+            "location": "[resourceGroup().location]",
+            "tags": {},
+            "properties": {
+                "publisher": "Microsoft.Azure.ActiveDirectory",
+                "type": "AADLoginForWindows",
+                "typeHandlerVersion": "1.0",
+                "autoUpgradeMinorVersion": true,
+                "settings": {
+                    "mdmId": ""
+                }
+            },
+            "condition": "[if(equals(parameters('domainType'), 'AzureAD'), 'true', 'false')]",
+            "dependsOn": [
+                "[concat('Microsoft.Compute/virtualMachines/', variables('managementVMName'))]"
+            ]
+        },
+        // Microsoft.KeyVault/vaults/secrets- Store Local creds
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "[concat(variables('managementVMName'), '-storeLocalCreds']",
+            "apiVersion": "2022-09-01",
+            "resourceGroup": "[parameters('keyVaultResourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "resources": [
+                        // Microsoft.KeyVault/vaults/secrets - managementVMLocalAdminName
+                        {
+                            "type": "Microsoft.KeyVault/vaults/secrets",
+                            "name": "[concat(parameters('keyVaultName'), '/managementVMLocalAdminName')]",
+                            "apiVersion": "2022-07-01",
+                            "tags": {},
+                            "properties": {
+                                "value": "[parameters('managementVMLocalAdminName')]",
+                                "contentType": "string"
+                            }
+                        },
+                        // Microsoft.KeyVault/vaults/secrets - managementVMLocalAdminPassword
+                        {
+                            "name": "[concat(parameters('keyVaultName'), '/managementVMLocalAdminPassword')]",
+                            "type": "Microsoft.KeyVault/vaults/secrets",
+                            "apiVersion": "2018-02-14",
+                            "tags": {},
+                            "properties": {
+                                "value": "[parameters('managementVMLocalAdminPassword')]",
+                                "contentType": "string"
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        // Microsoft.RecoveryServices/vaults/backupPolicies - Management VM backup policy
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "ManagementVMBackupPolicyDeployment",
+            "apiVersion": "2022-09-01",
+            "resourceGroup": "[parameters('recoveryVaultResourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "resources": [
+                        {
+                            "type": "Microsoft.RecoveryServices/vaults/backupPolicies",
+                            "name": "[concat(parameters('recoverVaultName'), '/', variables('managementVMBackup').policyname)]",
+                            "apiVersion": "2017-07-01",
+                            "properties": {
+                                "backupManagementType": "AzureIaasVM",
+                                "policyType": "V1",
+                                "schedulePolicy": "[variables('managementVMBackup').schedule]",
+                                "retentionPolicy": "[variables('managementVMBackup').retention]",
+                                "timeZone": "[variables('managementVMBackup').policytimezone]",
+                                "instantRpRetentionRangeInDays": "[variables('managementVMBackup').instantrestoreretentiondays]",
+                                "instantRPDetails": {}
+                            }
+                        }
+                    ]
+                }
+            }
+        },
+        // Microsoft.RecoveryServices/vaults/backupFabrics/backupProtectionIntent - Management VM Retention Policy
+        {
+            "type": "Microsoft.Resources/deployments",
+            "name": "ManagementVMBackupProtectionIntentDeployment",
+            "apiVersion": "2022-09-01",
+            "resourceGroup": "[parameters('recoveryVaultResourceGroupName')]",
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "resources": [
+                        {
+                            "type": "Microsoft.RecoveryServices/vaults/backupFabrics/backupProtectionIntent",
+                            "name": "[concat(parameters('recoverVaultName'), '/Azure/', variables('managementVMBackup').itemname)]",
+                            "apiVersion": "2017-07-01",
+                            "properties": {
+                                "friendlyName": "[concat(variables('managementVMName'), 'BackupIntent')]",
+                                "protectionIntentItemType": "AzureResourceItem",
+                                "policyId": "[resourceId(parameters('recoveryVaultResourceGroupName'), 'Microsoft.RecoveryServices/vaults/backupPolicies', parameters('recoverVaultName'), variables('managementVMBackup').policyname)]",
+                                "sourceResourceId": "[resourceId(resourceGroup().name, 'Microsoft.Compute/virtualMachines', variables('managementVMName'))]"
+                            }
+                        }
+                    ]
+                }
+            },
+            "dependsOn": [
+                "[resourceId(resourceGroup().name, 'Microsoft.Compute/virtualMachines', variables('managementVMName'))]",
+                "[concat('Microsoft.Resources/deployments', '/', 'ManagementVMBackupPolicyDeployment')]"
+            ]
+        }
+    ],
+    "outputs": {}
+}

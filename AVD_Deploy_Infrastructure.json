@@ -14,6 +14,12 @@
         "description": "The deployment region for this AVD hub infrastructure"
       }
     },
+    "deploymentTimezone": {
+      "type": "string",
+      "metadata": {
+        "description": "The deployment timezone for the AVD hub infrastructure, Pacific Standard Time, Mountain Standard Time, Central Standard Time, or Eastern Standard Time"
+      }
+    },
     "hubNetworkAddressSpace": {
       "type": "string",
       "metadata": {
@@ -32,6 +38,45 @@
       "metadata": {
         "description": "Enable an Azure Bastion service on the hub to access virtual machines without a public IP address, this is a billable option."
       }
+    },
+    "enableManagementVM": {
+      "type": "bool",
+      "defaultValue": true,
+      "metadata": {
+        "description": "Enable a management virtual machine attached to the internal virtual network, this machine allows full access to any resource attached to the internal virtual network.  Access this machine through a public IP address, Bastion service or through the firewall, depending on your configuration.  This VM will automatically shutdown every night at 11:00 PM in the time zone specified. This VM is a billable option."
+      }
+    },
+    "notificationEmail": {
+      "type": "string",
+      "metadata": {
+        "description": "A e-mail address to send notification to"
+      }
+    },
+    "domainType": {
+      "type": "string",
+      "allowedValues": [ "AzureAD", "Domain", "Local" ],
+      "defaultValue": "AzureAD",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "domainName": {
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "domainJoinAdmin": {
+      "type": "string",
+      "metadata": {
+        "description": ""
+      }
+    },
+    "domainJoinPassword": {
+      "type": "securestring",
+      "metadata": {
+        "description": ""
+      }
     }
   },
   "variables": {
@@ -39,7 +84,8 @@
     "logAnalyticsResourceGroupName": "[concat(parameters('rootDeploymentName'), '-loganalytics-', parameters('deploymentRegion'), '-rg')]",
     "keyVaultResourceGroupName": "[concat(parameters('rootDeploymentName'), '-keyvault-', parameters('deploymentRegion'), '-rg')]",
     "automationResourceGroupName": "[concat(parameters('rootDeploymentName'), '-automation-', parameters('deploymentRegion'), '-rg')]",
-    "recoveryVaultResourceGroupName": "[concat(parameters('rootDeploymentName'), '-recoveryvault-', parameters('deploymentRegion'), '-rg')]"
+    "recoveryVaultResourceGroupName": "[concat(parameters('rootDeploymentName'), '-recoveryvault-', parameters('deploymentRegion'), '-rg')]",
+    "managementResourceGroupName": "[concat(parameters('rootDeploymentName'), '-management-', parameters('deploymentRegion'), '-rg')]"
   },
   "resources": [
     // --== Virtual Network ==--
@@ -53,7 +99,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "name": "virtualNetworkDeployment",      
+      "name": "virtualNetworkDeployment",
       "apiVersion": "2022-09-01",
       "tags": {},
       "resourceGroup": "[variables('virtualNetworkResourceGroupName')]",
@@ -90,7 +136,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "name": "logAnalyticsDeployment",      
+      "name": "logAnalyticsDeployment",
       "apiVersion": "2022-09-01",
       "tags": {},
       "resourceGroup": "[variables('logAnalyticsResourceGroupName')]",
@@ -118,7 +164,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "name": "keyVaultDeployment",      
+      "name": "keyVaultDeployment",
       "apiVersion": "2022-09-01",
       "tags": {},
       "resourceGroup": "[variables('keyVaultResourceGroupName')]",
@@ -126,7 +172,7 @@
         "mode": "Incremental",
         "parameters": {
           "virtualNetworkResourceID": {
-             "value": "[reference('virtualNetworkDeployment').outputs.virtualNetworkResourceID.value]"
+            "value": "[reference('virtualNetworkDeployment').outputs.virtualNetworkResourceID.value]"
           }
         },
         "templateLink": {
@@ -150,7 +196,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "name": "automationDeployment",      
+      "name": "automationDeployment",
       "apiVersion": "2022-09-01",
       "tags": {},
       "resourceGroup": "[variables('automationResourceGroupName')]",
@@ -158,16 +204,16 @@
         "mode": "Incremental",
         "parameters": {
           "virtualNetworkResourceID": {
-             "value": "[reference('virtualNetworkDeployment').outputs.virtualNetworkResourceID.value]"
+            "value": "[reference('virtualNetworkDeployment').outputs.virtualNetworkResourceID.value]"
           },
           "subnetServicesResourceID": {
-             "value": "[reference('virtualNetworkDeployment').outputs.subnetServicesResourceID.value]"
+            "value": "[reference('virtualNetworkDeployment').outputs.subnetServicesResourceID.value]"
           },
           "logAnalyticsResourceID": {
-             "value": "[reference('logAnalyticsDeployment').outputs.logAnalyticsResourceID.value]"
+            "value": "[reference('logAnalyticsDeployment').outputs.logAnalyticsResourceID.value]"
           },
           "logAnalyticsName": {
-             "value": "[reference('logAnalyticsDeployment').outputs.logAnalyticsName.value]"
+            "value": "[reference('logAnalyticsDeployment').outputs.logAnalyticsName.value]"
           }
         },
         "templateLink": {
@@ -192,7 +238,7 @@
     },
     {
       "type": "Microsoft.Resources/deployments",
-      "name": "recoveryVaultDeployment",      
+      "name": "recoveryVaultDeployment",
       "apiVersion": "2022-09-01",
       "tags": {},
       "resourceGroup": "[variables('recoveryVaultResourceGroupName')]",
@@ -200,10 +246,10 @@
         "mode": "Incremental",
         "parameters": {
           "virtualNetworkResourceID": {
-             "value": "[reference('virtualNetworkDeployment').outputs.virtualNetworkResourceID.value]"
+            "value": "[reference('virtualNetworkDeployment').outputs.virtualNetworkResourceID.value]"
           },
           "subnetServicesResourceID": {
-             "value": "[reference('virtualNetworkDeployment').outputs.subnetServicesResourceID.value]"
+            "value": "[reference('virtualNetworkDeployment').outputs.subnetServicesResourceID.value]"
           }
         },
         "templateLink": {
@@ -214,6 +260,73 @@
       "dependsOn": [
         "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('recoveryVaultResourceGroupName'))]",
         "virtualNetworkDeployment"
+      ]
+    },
+    // --== Management VM ==--
+    {
+      "type": "Microsoft.Resources/resourceGroups",
+      "name": "[variables('managementResourceGroupName')]",
+      "apiVersion": "2022-09-01",
+      "location": "[parameters('deploymentRegion')]",
+      "tags": {},
+      "managedBy": "Someone",
+      "condition": "[parameters('enableManagementVM')]"
+    },
+    {
+      "type": "Microsoft.Resources/deployments",
+      "name": "managementVMDeployment",
+      "apiVersion": "2022-09-01",
+      "tags": {},
+      "resourceGroup": "[variables('managementResourceGroupName')]",
+      "properties": {
+        "mode": "Incremental",
+        "parameters": {
+          "doaminType": {
+            "value": "[parameters('domainType')]"
+          },
+          "domainName": {
+            "value": "[parameters('domainName')]"
+          },
+          "domainJoinAdmin": {
+            "value": "[parameters('domainJoinAdmin')]"
+          },
+          "domainJoinPassword": {
+            "value": "[parameters('domainJoinPassword')]"
+          },
+          "notificationEmail": {
+            "value": "[parameters('notificationEmail')]"
+          },
+          "deploymentTimezone": {
+            "value": "[parameters('deploymentTimezone')]"
+          },
+          "subnetPlatformResourceID": {
+            "value": "[reference('virtualNetworkDeployment').outputs.subnetPlatformResourceID.value]"
+          },
+          "keyVaultResourceGroupName": {
+            "value": "[variables('keyVaultResourceGroupName')]"
+          },
+          "recoveryVaultResourceGroupName": {
+            "value": "[variables('recoveryVaultResourceGroupName')]"
+          },
+          "keyVaultName": {
+            "value": "[reference('keyVaultDeployment').outputs.keyVaultName.value]"
+          },
+          "recoverVaultName": {
+            "value": "[reference('recoveryVaultDeployment').outputs.recoverVaultName.value]"
+          }
+        },
+        "templateLink": {
+          "uri": "[uri(deployment().properties.templateLink.uri, 'AVD_Deploy_ManagementVM.json')]",
+          "contentVersion": "1.0.0.0"
+        }
+      },
+      "condition": "[parameters('enableManagementVM')]",
+      "dependsOn": [
+        "[subscriptionResourceId('Microsoft.Resources/resourceGroups', variables('managementResourceGroupName'))]",
+        "virtualNetworkDeployment",
+        "keyVaultDeployment",
+        "automationDeployment",
+        "recoveryVaultDeployment"
       ]
     }
   ],
