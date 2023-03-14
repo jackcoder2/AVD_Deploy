@@ -120,7 +120,7 @@
                     "retentionPolicyType": "LongTermRetentionPolicy",
                     "dailySchedule": {
                         "retentionTimes": [
-                            "2023-03-13T12:00:00.000Z"
+                            "2023-03-13T12:00:00Z"
                         ],
                         "retentionDuration": {
                             "count": 7,
@@ -325,7 +325,7 @@
                         {
                             "type": "Microsoft.RecoveryServices/vaults/backupPolicies",
                             "name": "[concat(parameters('recoverVaultName'), '/', variables('managementVMBackup').policyname)]",
-                            "apiVersion": "2017-07-01",
+                            "apiVersion": "2023-01-01",
                             "properties": {
                                 "backupManagementType": "AzureIaasVM",
                                 "policyType": "V1",
