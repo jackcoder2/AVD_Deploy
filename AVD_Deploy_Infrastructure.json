@@ -281,7 +281,7 @@
       "properties": {
         "mode": "Incremental",
         "parameters": {
-          "doaminType": {
+          "domainType": {
             "value": "[parameters('domainType')]"
           },
           "domainName": {
