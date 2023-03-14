@@ -101,39 +101,6 @@
                 "locale": "en",
                 "email": "[parameters('notificationEmail')]"
             }
-        },
-        "managementVMBackup": {
-            "itemname": "[concat('vm;iaasvmcontainerv2;', resourceGroup().name, ';', variables('managementVMName'))]",
-            "policyname": "managementMachineDailyPolicy",
-            "schedule": {
-                "value": {
-                    "schedulePolicyType": "SimpleSchedulePolicy",
-                    "scheduleRunFrequency": "Daily",
-                    "scheduleRunDays": null,
-                    "scheduleRunTimes": [
-                        "2023-03-13T4:30Z"
-                    ]
-                }
-            },
-            "retention": {
-                "value": {
-                    "retentionPolicyType": "LongTermRetentionPolicy",
-                    "dailySchedule": {
-                        "retentionTimes": [
-                            "2023-03-13T4:30Z"
-                        ],
-                        "retentionDuration": {
-                            "count": 7,
-                            "durationType": "Days"
-                        }
-                    },
-                    "weeklySchedule": null,
-                    "monthlySchedule": null,
-                    "yearlySchedule": null
-                }
-            },
-            "policytimezone": "[parameters('deploymentTimezone')]",
-            "instantrestoreretentiondays": 2
         }
     },
     "resources": [
@@ -324,22 +291,52 @@
                     "resources": [
                         {
                             "type": "Microsoft.RecoveryServices/vaults/backupPolicies",
-                            "name": "[concat(parameters('recoverVaultName'), '/', variables('managementVMBackup').policyname)]",
+                            "name": "[concat(parameters('recoverVaultName'), '/', variables('managementVMName'), '-backupPolicy')]",
                             "apiVersion": "2023-01-01",
                             "properties": {
                                 "backupManagementType": "AzureIaasVM",
-                                "policyType": "V1",
-                                "schedulePolicy": "[variables('managementVMBackup').schedule]",
-                                "retentionPolicy": "[variables('managementVMBackup').retention]",
-                                "timeZone": "[variables('managementVMBackup').policytimezone]",
-                                "instantRpRetentionRangeInDays": "[variables('managementVMBackup').instantrestoreretentiondays]",
-                                "instantRPDetails": {}
+                                "instantRpRetentionRangeInDays": 2,
+                                "schedulePolicy": {
+                                    "scheduleRunFrequency": "Daily",
+                                    "scheduleRunDays": null,
+                                    "scheduleRunTimes": [
+                                        "21:00"
+                                    ],
+                                    "schedulePolicyType": "SimpleSchedulePolicy"
+                                },
+                                "retentionPolicy": {
+                                    "dailySchedule": {
+                                        "retentionTimes": [
+                                            "21:00"
+                                        ],
+                                        "retentionDuration": {
+                                            "count": 7,
+                                            "durationType": "Days"
+                                        }
+                                    },
+                                    "weeklySchedule": {
+                                        "daysOfTheWeek": [
+                                            "Sunday"
+                                        ],
+                                        "retentionTimes": [
+                                            "21:00"
+                                        ],
+                                        "retentionDuration": {
+                                            "count": 4,
+                                            "durationType": "Weeks"
+                                        }
+                                    },
+                                    "monthlySchedule": null,
+                                    "yearlySchedule": null,
+                                    "retentionPolicyType": "LongTermRetentionPolicy"
+                                },
+                                "timeZone": "[parameters('deploymentTimezone')]"
                             }
                         }
                     ]
                 }
             }
-        },
+        }/* ,
         // Microsoft.RecoveryServices/vaults/backupFabrics/backupProtectionIntent - Management VM Retention Policy
         {
             "type": "Microsoft.Resources/deployments",
@@ -370,7 +367,7 @@
                 "[resourceId(resourceGroup().name, 'Microsoft.Compute/virtualMachines', variables('managementVMName'))]",
                 "[concat('Microsoft.Resources/deployments', '/', 'ManagementVMBackupPolicyDeployment')]"
             ]
-        }
+        } */
     ],
     "outputs": {}
 }
